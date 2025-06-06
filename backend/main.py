@@ -20,6 +20,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Tambahan endpoint root untuk cek app jalan
+@app.get("/")
+async def root():
+    return {"message": "API is running!"}
+
 # Device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
