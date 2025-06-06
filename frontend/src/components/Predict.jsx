@@ -20,6 +20,7 @@ export default function Predict() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
     if (!file) {
       alert("Pilih gambar dulu ya!");
       return;
@@ -33,12 +34,26 @@ export default function Predict() {
       setPrediction("");
       setStatus("");
 
-      const res = await axios.post("http://localhost:8000/predict", formData);
-
-      setPrediction(
-        `🖼️ Prediksi: ${res.data.prediction} (Confidence: ${res.data.confidence})`
+      // Ganti URL ini dengan URL backend heroku kamu
+      const res = await axios.post(
+        "https://backend-dogandcat-cac1fb9d7d64.herokuapp.com/predict",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
-      setStatus("success");
+
+      if (res.data.error) {
+        setPrediction(`⚠️ Error: ${res.data.error}`);
+        setStatus("error");
+      } else {
+        setPrediction(
+          `🖼️ Prediksi: ${res.data.prediction} (Confidence: ${res.data.confidence})`
+        );
+        setStatus("success");
+      }
     } catch (err) {
       console.error(err);
       setPrediction("⚠️ Terjadi kesalahan saat prediksi.");
